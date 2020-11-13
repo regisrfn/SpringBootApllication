@@ -1,12 +1,15 @@
 package com.rufino.server.api;
 
 import java.io.Console;
+import java.util.UUID;
 
 import com.rufino.server.model.Order;
 import com.rufino.server.services.OrderService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -26,5 +29,11 @@ public class OrderController {
     public String saveOrder(@RequestBody Order order) {
         int op = orderService.addOrder(order);
         return (op > 0) ? "order added successfully" : "Error operation"; 
+    }
+
+    @DeleteMapping("/api/v1/order/{id}")
+    public String deleteOrder(@PathVariable UUID id) {
+        int op = orderService.delete(id);
+        return (op > 0) ? "successfully operation" : "Error operation"; 
     }
 }

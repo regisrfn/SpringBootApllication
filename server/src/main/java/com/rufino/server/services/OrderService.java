@@ -1,5 +1,7 @@
 package com.rufino.server.services;
 
+import java.util.UUID;
+
 import com.rufino.server.dao.OrderDAO;
 import com.rufino.server.model.Order;
 
@@ -19,6 +21,10 @@ public class OrderService {
 
     public int addOrder(Order order){
         return orderDAO.insertOrder(order);
+    }
+
+    public int delete(UUID id){
+        return orderDAO.deleteOrder(id);
     }
     
 }

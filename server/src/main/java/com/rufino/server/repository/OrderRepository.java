@@ -9,12 +9,20 @@ import com.rufino.server.Database.DatabaseConnection;
 import com.rufino.server.dao.OrderDAO;
 import com.rufino.server.model.Order;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 @Repository("DB_H2")
 public class OrderRepository implements OrderDAO{
 
     private static Connection conn = null;
+    private JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    public OrderRepository (JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
 
     @Override
     public int insertOrder(UUID id, Order order) {
@@ -27,6 +35,11 @@ public class OrderRepository implements OrderDAO{
             e.printStackTrace();
             return 0;
         }
+    }
+
+    @Override
+    public int deleteOrder(UUID id) {
+        return jdbcTemplate.update("delete from orders where id_order = ?", id);
     }
 
     private int saveSQL(UUID id, Order order, Statement stmt) throws SQLException {

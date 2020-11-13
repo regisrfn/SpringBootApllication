@@ -89,9 +89,9 @@ class ServerApplicationTests {
 		order.setTotalValue(0.50f);
 		order.setOrderAddress("Rua de cima");
 		long countBeforeInsert = jdbcTemplate.queryForObject("select count(*) from orders", Long.class);
-		assertEquals(0, countBeforeInsert);
+		assertEquals(1, countBeforeInsert);
 		orderService.addOrder(order);
 		long countAfterInsert = jdbcTemplate.queryForObject("select count(*) from orders", Long.class);
-		assertEquals(1, countAfterInsert);
+		assertEquals(2, countAfterInsert);
 	}
 }
