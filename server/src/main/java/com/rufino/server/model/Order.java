@@ -1,22 +1,24 @@
 package com.rufino.server.model;
 
+import java.util.UUID;
+
 public class Order {
 
-    private Integer idOrder;
-    private Integer idClient;
-    private Integer idParcel;
+    private UUID idOrder;
+    private int idClient;
+    private int idParcel;
     private Float totalValue;
     private String orderAddress;
 
-    public void setIdOrder(Integer idOrder) {
+    public void setIdOrder(UUID idOrder) {
         this.idOrder = idOrder;
     }
 
-    public void setIdClient(Integer idClient) {
+    public void setIdClient(int idClient) {
         this.idClient = idClient;
     }
 
-    public void setIdParcel(Integer idParcel) {
+    public void setIdParcel(int idParcel) {
         this.idParcel = idParcel;
     }
 
@@ -28,15 +30,15 @@ public class Order {
         this.orderAddress = orderAddress;
     }
 
-    public Integer getIdOrder() {
+    public UUID getIdOrder() {
         return idOrder;
     }
 
-    public Integer getIdClient() {
+    public int getIdClient() {
         return idClient;
     }
 
-    public Integer getIdParcel() {
+    public int getIdParcel() {
         return idParcel;
     }
 
