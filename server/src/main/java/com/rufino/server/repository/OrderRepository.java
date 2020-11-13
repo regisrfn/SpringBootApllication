@@ -21,21 +21,19 @@ public class OrderRepository implements OrderDAO{
         try {
             conn = DatabaseConnection.getInstance().getConnection();
             Statement stmt = conn.createStatement();
-            saveSQL(id, order, stmt);
-            return 1;
+            return saveSQL(id, order, stmt);
 
         } catch (SQLException e) {
             e.printStackTrace();
             return 0;
         }
-
     }
 
-    private void saveSQL(UUID id, Order order, Statement stmt) throws SQLException {
+    private int saveSQL(UUID id, Order order, Statement stmt) throws SQLException {
         String command = "INSERT INTO";
         String fields = "(id_order,id_client, id_parcel, total_value, order_address)";
         String values = String.format("VALUES('%s',%s,%s,%s,'%s')", id,order.getIdClient(),order.getIdParcel(), order.getTotalValue(),order.getOrderAddress());
         String sql = String.format("%s orders %s %s",command,fields,values);
-        stmt.executeUpdate(sql);
+        return stmt.executeUpdate(sql);
     }    
 }

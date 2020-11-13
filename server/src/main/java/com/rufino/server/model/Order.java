@@ -7,7 +7,7 @@ public class Order {
     private UUID idOrder;
     private int idClient;
     private int idParcel;
-    private Float totalValue;
+    private float totalValue;
     private String orderAddress;
 
     public void setIdOrder(UUID idOrder) {
@@ -22,7 +22,7 @@ public class Order {
         this.idParcel = idParcel;
     }
 
-    public void setTotalValue(Float totalValue) {
+    public void setTotalValue(float totalValue) {
         this.totalValue = totalValue;
     }
 
@@ -42,7 +42,7 @@ public class Order {
         return idParcel;
     }
 
-    public Float getTotalValue() {
+    public float getTotalValue() {
         return totalValue;
     }
 
