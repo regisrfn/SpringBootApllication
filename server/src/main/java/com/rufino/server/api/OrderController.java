@@ -1,5 +1,7 @@
 package com.rufino.server.api;
 
+import java.io.Console;
+
 import com.rufino.server.model.Order;
 import com.rufino.server.services.OrderService;
 
@@ -21,7 +23,8 @@ public class OrderController {
     }
 
     @PostMapping("/api/v1/order")
-    private void saveOrder(@RequestBody Order order) {
-        orderService.addOrder(order);
+    public String saveOrder(@RequestBody Order order) {
+        int op = orderService.addOrder(order);
+        return (op > 0) ? "order added successfully" : "Error operation"; 
     }
 }
