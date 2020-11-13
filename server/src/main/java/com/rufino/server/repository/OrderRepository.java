@@ -21,10 +21,7 @@ public class OrderRepository implements OrderDAO{
         try {
             conn = DatabaseConnection.getInstance().getConnection();
             Statement stmt = conn.createStatement();
-            String sql = String.format("INSERT INTO orders " + "(id_order,id_client, id_parcel, total_value, order_address)" +
-            "VALUES ('%s',123, 456, 1.99, 'Rua de cima')", id);
-            stmt.executeUpdate(sql);
-            System.out.println(order.getIdClient());
+            saveSQL(id, order, stmt);
             return 1;
 
         } catch (SQLException e) {
@@ -33,6 +30,12 @@ public class OrderRepository implements OrderDAO{
         }
 
     }
-    
-    
+
+    private void saveSQL(UUID id, Order order, Statement stmt) throws SQLException {
+        String command = "INSERT INTO";
+        String fields = "(id_order,id_client, id_parcel, total_value, order_address)";
+        String values = String.format("VALUES('%s',%s,%s,%s,'%s')", id,order.getIdClient(),order.getIdParcel(), order.getTotalValue(),order.getOrderAddress());
+        String sql = String.format("%s orders %s %s",command,fields,values);
+        stmt.executeUpdate(sql);
+    }    
 }
