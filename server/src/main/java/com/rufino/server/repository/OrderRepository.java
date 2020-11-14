@@ -29,7 +29,9 @@ public class OrderRepository implements OrderDAO{
         try {
             conn = DatabaseConnection.getInstance().getConnection();
             Statement stmt = conn.createStatement();
-            return saveSQL(id, order, stmt);
+            int result = saveSQL(id, order, stmt);
+            order.setIdOrder((result > 0 ? id: null));
+            return result;
 
         } catch (SQLException e) {
             e.printStackTrace();
