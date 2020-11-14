@@ -1,6 +1,5 @@
 package com.rufino.server.api;
 
-import java.io.Console;
 import java.util.UUID;
 
 import com.rufino.server.model.Order;
@@ -21,19 +20,25 @@ public class OrderController {
     private final OrderService orderService;
 
     @Autowired
-    public OrderController(OrderService orderService){
+    public OrderController(OrderService orderService) {
         this.orderService = orderService;
     }
 
     @PostMapping("/api/v1/order")
     public String saveOrder(@RequestBody Order order) {
         int op = orderService.addOrder(order);
-        return (op > 0) ? "order added successfully" : "Error operation"; 
+        return (op > 0) ? "order added successfully" : "Error operation";
     }
 
     @DeleteMapping("/api/v1/order/{id}")
-    public String deleteOrder(@PathVariable UUID id) {
-        int op = orderService.delete(id);
-        return (op > 0) ? "successfully operation" : "Error operation"; 
+    public String deleteOrder(@PathVariable String id) {
+        try {
+            UUID idOrder = UUID.fromString(id);
+            int op = orderService.delete(idOrder);
+            return (op > 0) ? "successfully operation" : "error operation";
+        } catch (Exception e) {
+            return "error operation";
+        }
+
     }
 }
