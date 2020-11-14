@@ -2,6 +2,8 @@ package com.rufino.server;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.UUID;
@@ -17,13 +19,16 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.web.client.RestTemplate;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -34,6 +39,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 class ServerApplicationTests {
 
+	@Value("${server.port}")
+	private int serverPort;
 	private static Connection conn;
 
 	@Autowired
@@ -61,7 +68,8 @@ class ServerApplicationTests {
 	@Test
 	void clear() {
 		jdbcTemplate.update("DROP TABLE IF EXISTS orders");
-		jdbcTemplate.update("CREATE TABLE IF NOT EXISTS orders (id_order VARCHAR(36) NOT NULL PRIMARY KEY,id_client INT NOT NULL,id_parcel INT NOT NULL,total_value FLOAT NOT NULL,order_address VARCHAR(256) NOT NULL);");
+		jdbcTemplate.update(
+				"CREATE TABLE IF NOT EXISTS orders (id_order VARCHAR(36) NOT NULL PRIMARY KEY,id_client INT NOT NULL,id_parcel INT NOT NULL,total_value FLOAT NOT NULL,order_address VARCHAR(256) NOT NULL);");
 	}
 
 	// ---------------------TEST HOME PAGE-------------------
@@ -90,6 +98,23 @@ class ServerApplicationTests {
 
 		assertEquals("order added successfully", result.getResponse().getContentAsString());
 
+	}
+
+	@Test
+	void addOrderText_errorExpected() throws URISyntaxException {
+		RestTemplate restTemplate = new RestTemplate();
+		final String baseUrl = "http://localhost:" + serverPort + "/api/v1/order";
+		URI uri = new URI(baseUrl);
+
+		Order order = new Order();
+		order.setIdClient(1111);
+		order.setIdParcel(3333);
+		order.setTotalValue(0.50f);
+		order.setOrderAddress("Rua de cima");
+		ResponseEntity<String> result = restTemplate.postForEntity(uri, order, String.class);
+		//Verify request succeed
+		assertEquals(200, result.getStatusCodeValue());
+		assertEquals("order added successfully", result.getBody());
 	}
 
 	@Test
@@ -139,8 +164,7 @@ class ServerApplicationTests {
 		long countAfterInsert = jdbcTemplate.queryForObject("select count(*) from orders", Long.class);
 		assertEquals(1, countAfterInsert);
 
-		MvcResult result = mockMvc
-				.perform(delete(String.format("/api/v1/order/%s", order.getIdOrder())))
+		MvcResult result = mockMvc.perform(delete(String.format("/api/v1/order/%s", order.getIdOrder())))
 				.andExpect(status().isOk()).andReturn();
 
 		assertEquals("successfully operation", result.getResponse().getContentAsString());
@@ -161,9 +185,8 @@ class ServerApplicationTests {
 		long countAfterInsert = jdbcTemplate.queryForObject("select count(*) from orders", Long.class);
 		assertEquals(1, countAfterInsert);
 
-		MvcResult result = mockMvc
-				.perform(delete(String.format("/api/v1/order/1")))
-				.andExpect(status().isOk()).andReturn();
+		MvcResult result = mockMvc.perform(delete(String.format("/api/v1/order/1"))).andExpect(status().isOk())
+				.andReturn();
 
 		assertEquals("error operation", result.getResponse().getContentAsString());
 		long countAfterDelete = jdbcTemplate.queryForObject("select count(*) from orders", Long.class);
