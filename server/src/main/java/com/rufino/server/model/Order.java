@@ -5,8 +5,8 @@ import java.util.UUID;
 public class Order {
 
     private UUID idOrder;
-    private int idClient;
-    private int idParcel;
+    private String idClient;
+    private String idParcel;
     private float totalValue;
     private String orderAddress;
 
@@ -14,11 +14,11 @@ public class Order {
         this.idOrder = idOrder;
     }
 
-    public void setIdClient(int idClient) {
+    public void setIdClient(String idClient) {
         this.idClient = idClient;
     }
 
-    public void setIdParcel(int idParcel) {
+    public void setIdParcel(String idParcel) {
         this.idParcel = idParcel;
     }
 
@@ -34,11 +34,11 @@ public class Order {
         return idOrder;
     }
 
-    public int getIdClient() {
+    public String getIdClient() {
         return idClient;
     }
 
-    public int getIdParcel() {
+    public String getIdParcel() {
         return idParcel;
     }
 

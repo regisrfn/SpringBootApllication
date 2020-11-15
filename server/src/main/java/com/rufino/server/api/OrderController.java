@@ -51,6 +51,7 @@ public class OrderController {
             int op = orderService.delete(idOrder);
             return (op > 0) ? "successfully operation" : "error operation";
         } catch (Exception e) {
+            e.printStackTrace();
             return "error operation";
         }
 

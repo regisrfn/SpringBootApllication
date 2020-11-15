@@ -51,8 +51,8 @@ class ServerApplicationTests {
 	@Test
 	public void createNewOrder() {
 		Order order = new Order();
-		order.setIdClient(1111);
-		order.setIdParcel(3333);
+		order.setIdClient("abc123");
+		order.setIdParcel("abc456");
 		order.setTotalValue(0.50f);
 		order.setOrderAddress("Rua de cima");
 		long countBeforeInsert = jdbcTemplate.queryForObject("select count(*) from orders", Long.class);
@@ -96,8 +96,8 @@ class ServerApplicationTests {
 	@Test
 	public void deleteOrderDAO() {
 		Order order = new Order();
-		order.setIdClient(1111);
-		order.setIdParcel(3333);
+		order.setIdClient("abc123");
+		order.setIdParcel("abc456");
 		order.setTotalValue(0.50f);
 		order.setOrderAddress("Rua de cima");
 		long countBeforeInsert = jdbcTemplate.queryForObject("select count(*) from orders", Long.class);
@@ -115,8 +115,8 @@ class ServerApplicationTests {
 	@Test
 	public void deleteOrderHttp() throws Exception {
 		Order order = new Order();
-		order.setIdClient(1111);
-		order.setIdParcel(3333);
+		order.setIdClient("abc123");
+		order.setIdParcel("abc456");
 		order.setTotalValue(0.50f);
 		order.setOrderAddress("Rua de cima");
 		long countBeforeInsert = jdbcTemplate.queryForObject("select count(*) from orders", Long.class);
@@ -136,8 +136,8 @@ class ServerApplicationTests {
 	@Test
 	public void deleteOrderHttp_ErrorExpected() throws Exception {
 		Order order = new Order();
-		order.setIdClient(1111);
-		order.setIdParcel(3333);
+		order.setIdClient("abc123");
+		order.setIdParcel("abc456");
 		order.setTotalValue(0.50f);
 		order.setOrderAddress("Rua de cima");
 		long countBeforeInsert = jdbcTemplate.queryForObject("select count(*) from orders", Long.class);
