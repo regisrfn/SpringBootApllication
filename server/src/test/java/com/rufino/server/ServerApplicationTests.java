@@ -2,8 +2,6 @@ package com.rufino.server;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.UUID;
@@ -23,12 +21,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.web.client.RestTemplate;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -98,23 +94,6 @@ class ServerApplicationTests {
 
 		assertEquals("order added successfully", result.getResponse().getContentAsString());
 
-	}
-
-	@Test
-	void addOrderText_errorExpected() throws URISyntaxException {
-		RestTemplate restTemplate = new RestTemplate();
-		final String baseUrl = "http://localhost:" + serverPort + "/api/v1/order";
-		URI uri = new URI(baseUrl);
-
-		Order order = new Order();
-		order.setIdClient(1111);
-		order.setIdParcel(3333);
-		order.setTotalValue(0.50f);
-		order.setOrderAddress("Rua de cima");
-		ResponseEntity<String> result = restTemplate.postForEntity(uri, order, String.class);
-		//Verify request succeed
-		assertEquals(200, result.getStatusCodeValue());
-		assertEquals("order added successfully", result.getBody());
 	}
 
 	@Test
