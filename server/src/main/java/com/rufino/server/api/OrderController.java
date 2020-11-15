@@ -27,7 +27,7 @@ public class OrderController {
     @PostMapping("/api/v1/order")
     public String saveOrder(@RequestBody Order order) {
         int op = orderService.addOrder(order);
-        return (op > 0) ? "order added successfully" : "Error operation";
+        return (op > 0) ? "order added successfully" : "error operation";
     }
 
     @DeleteMapping("/api/v1/order/{id}")

@@ -1,23 +1,14 @@
 package com.rufino.server;
 
 import static org.junit.jupiter.api.Assertions.*;
-
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.UUID;
-
-import com.rufino.server.Database.DatabaseConnection;
 import com.rufino.server.model.Order;
 import com.rufino.server.services.OrderService;
-
 import org.json.JSONObject;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
@@ -25,7 +16,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -35,10 +25,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 class ServerApplicationTests {
 
-	@Value("${server.port}")
-	private int serverPort;
-	private static Connection conn;
-
 	@Autowired
 	private OrderService orderService;
 	@Autowired
@@ -46,26 +32,9 @@ class ServerApplicationTests {
 	@Autowired
 	private MockMvc mockMvc;
 
-	// TEST CONNECTION ON DATABASE
-	@BeforeAll
-	public static void openConnection() throws SQLException {
-		conn = DatabaseConnection.getInstance().getConnection();
-		assertNotNull(conn);
-	}
-
-	@AfterAll
-	public static void closeConnection() throws SQLException {
-		assertNotNull(conn);
-		conn.close();
-		assertEquals(true, conn.isClosed());
-	}
-
 	@BeforeEach
-	@Test
-	void clear() {
-		jdbcTemplate.update("DROP TABLE IF EXISTS orders");
-		jdbcTemplate.update(
-				"CREATE TABLE IF NOT EXISTS orders (id_order VARCHAR(36) NOT NULL PRIMARY KEY,id_client INT NOT NULL,id_parcel INT NOT NULL,total_value FLOAT NOT NULL,order_address VARCHAR(256) NOT NULL);");
+	void clearTable() {
+		jdbcTemplate.update("DELETE FROM ORDERS");
 	}
 
 	// ---------------------TEST HOME PAGE-------------------
@@ -80,7 +49,20 @@ class ServerApplicationTests {
 
 	// ----------------- TESTING CREATED ORDER
 	@Test
-	void addOrderTest() throws Exception {
+	public void createNewOrder() {
+		Order order = new Order();
+		order.setIdClient(1111);
+		order.setIdParcel(3333);
+		order.setTotalValue(0.50f);
+		order.setOrderAddress("Rua de cima");
+		long countBeforeInsert = jdbcTemplate.queryForObject("select count(*) from orders", Long.class);
+		assertEquals(0, countBeforeInsert);
+		orderService.addOrder(order);
+		long countAfterInsert = jdbcTemplate.queryForObject("select count(*) from orders", Long.class);
+		assertEquals(1, countAfterInsert);
+	}
+	@Test
+	void addOrderTestHttp() throws Exception {
 
 		JSONObject my_obj = new JSONObject();
 		my_obj.put("idCliente", 1111);
@@ -97,19 +79,19 @@ class ServerApplicationTests {
 	}
 
 	@Test
-	public void createNewOrder() {
-		Order order = new Order();
-		order.setIdClient(1111);
-		order.setIdParcel(3333);
-		order.setTotalValue(0.50f);
-		order.setOrderAddress("Rua de cima");
-		long countBeforeInsert = jdbcTemplate.queryForObject("select count(*) from orders", Long.class);
-		assertEquals(0, countBeforeInsert);
-		orderService.addOrder(order);
-		long countAfterInsert = jdbcTemplate.queryForObject("select count(*) from orders", Long.class);
-		assertEquals(1, countAfterInsert);
+	void addOrderTestHttp_ExpectedError() throws Exception {
+
+		JSONObject my_obj = new JSONObject();
+		my_obj.put("idCliente", 1111);
+		MvcResult result = mockMvc
+				.perform(post("/api/v1/order").contentType(MediaType.APPLICATION_JSON).content(my_obj.toString()))
+				.andExpect(status().isOk()).andReturn();
+
+		assertEquals("error operation", result.getResponse().getContentAsString());
+
 	}
 
+	
 	// -----------------TEST DELETING ORDER
 	@Test
 	public void deleteOrderDAO() {
