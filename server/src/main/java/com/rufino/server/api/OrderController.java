@@ -4,7 +4,7 @@ import java.util.UUID;
 
 import com.rufino.server.model.Order;
 import com.rufino.server.services.OrderService;
-import com.rufino.server.services.RabbitMQSender;
+import com.rufino.server.services.RabbitMqService;
 
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,20 +27,19 @@ public class OrderController {
     }
 
     @Autowired
-    RabbitMQSender rabbitMQSender;
+    RabbitMqService rabbitMqSender;
 
     @PostMapping("/api/v1/order")
     public String saveOrder(@RequestBody Order order) {
-        int op = orderService.addOrder(order);
-        
+        int op = orderService.addOrder(order);       
 
         if (op > 0) {
             JSONObject deliveryObj = new JSONObject();
             deliveryObj.put("idClient", order.getIdClient());
             deliveryObj.put("orderAddress", order.getOrderAddress());           
-            System.out.println(deliveryObj);
+            rabbitMqSender.send(deliveryObj.toString());  
         }
-        // rabbitMQSender.send("Created order");        
+             
         return (op > 0) ? "order added successfully" : "error operation";
     }
 
