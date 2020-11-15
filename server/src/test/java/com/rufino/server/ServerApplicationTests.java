@@ -51,15 +51,7 @@ class ServerApplicationTests {
 	@Test
 	public void createNewOrder() {
 		Order order = new Order();
-		order.setIdClient("abc123");
-		order.setIdParcel("abc456");
-		order.setTotalValue(0.50f);
-		order.setOrderAddress("Rua de cima");
-		long countBeforeInsert = jdbcTemplate.queryForObject("select count(*) from orders", Long.class);
-		assertEquals(0, countBeforeInsert);
-		orderService.addOrder(order);
-		long countAfterInsert = jdbcTemplate.queryForObject("select count(*) from orders", Long.class);
-		assertEquals(1, countAfterInsert);
+		createAndAssert(order);
 	}
 	@Test
 	void addOrderTestHttp() throws Exception {
@@ -96,15 +88,7 @@ class ServerApplicationTests {
 	@Test
 	public void deleteOrderDAO() {
 		Order order = new Order();
-		order.setIdClient("abc123");
-		order.setIdParcel("abc456");
-		order.setTotalValue(0.50f);
-		order.setOrderAddress("Rua de cima");
-		long countBeforeInsert = jdbcTemplate.queryForObject("select count(*) from orders", Long.class);
-		assertEquals(0, countBeforeInsert);
-		orderService.addOrder(order);
-		long countAfterInsert = jdbcTemplate.queryForObject("select count(*) from orders", Long.class);
-		assertEquals(1, countAfterInsert);
+		createAndAssert(order);
 
 		UUID id = order.getIdOrder();
 		orderService.delete(id);
@@ -115,15 +99,7 @@ class ServerApplicationTests {
 	@Test
 	public void deleteOrderHttp() throws Exception {
 		Order order = new Order();
-		order.setIdClient("abc123");
-		order.setIdParcel("abc456");
-		order.setTotalValue(0.50f);
-		order.setOrderAddress("Rua de cima");
-		long countBeforeInsert = jdbcTemplate.queryForObject("select count(*) from orders", Long.class);
-		assertEquals(0, countBeforeInsert);
-		orderService.addOrder(order);
-		long countAfterInsert = jdbcTemplate.queryForObject("select count(*) from orders", Long.class);
-		assertEquals(1, countAfterInsert);
+		createAndAssert(order);
 
 		MvcResult result = mockMvc.perform(delete(String.format("/api/v1/order/%s", order.getIdOrder())))
 				.andExpect(status().isOk()).andReturn();
@@ -136,6 +112,20 @@ class ServerApplicationTests {
 	@Test
 	public void deleteOrderHttp_ErrorExpected() throws Exception {
 		Order order = new Order();
+		createAndAssert(order);
+
+		MvcResult result = mockMvc.perform(delete(String.format("/api/v1/order/1"))).andExpect(status().isOk())
+				.andReturn();
+
+		assertEquals("error operation", result.getResponse().getContentAsString());
+		long countAfterDelete = jdbcTemplate.queryForObject("select count(*) from orders", Long.class);
+		assertEquals(1, countAfterDelete);
+	}
+
+
+	// -----------------TEST SELECT ALL
+	
+	private void createAndAssert(Order order) {
 		order.setIdClient("abc123");
 		order.setIdParcel("abc456");
 		order.setTotalValue(0.50f);
@@ -145,13 +135,6 @@ class ServerApplicationTests {
 		orderService.addOrder(order);
 		long countAfterInsert = jdbcTemplate.queryForObject("select count(*) from orders", Long.class);
 		assertEquals(1, countAfterInsert);
-
-		MvcResult result = mockMvc.perform(delete(String.format("/api/v1/order/1"))).andExpect(status().isOk())
-				.andReturn();
-
-		assertEquals("error operation", result.getResponse().getContentAsString());
-		long countAfterDelete = jdbcTemplate.queryForObject("select count(*) from orders", Long.class);
-		assertEquals(1, countAfterDelete);
 	}
 
 }
