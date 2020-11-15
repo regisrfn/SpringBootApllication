@@ -65,7 +65,7 @@ class ServerApplicationTests {
 	void addOrderTestHttp() throws Exception {
 
 		JSONObject my_obj = new JSONObject();
-		my_obj.put("idCliente", 1111);
+		my_obj.put("idClient", 1111);
 		my_obj.put("idParcel", 2222);
 		my_obj.put("totalValue", 15.99);
 		my_obj.put("orderAddress", "Rua do meio");
