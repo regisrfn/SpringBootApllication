@@ -71,8 +71,11 @@ public class OrderRepository implements OrderDAO {
     public Order getOrder(UUID id) {
         try {
             String sql = "SELECT * FROM ORDERS WHERE id_order = ?";
-            return jdbcTemplate.queryForObject(sql, new Object[] { id },
-                    new BeanPropertyRowMapper<Order>(Order.class));
+            orderDb = jdbcTemplate.query(sql, new Object[] { id }, new BeanPropertyRowMapper<Order>(Order.class));
+            if (orderDb.isEmpty()) {
+                return null;
+            }
+            return orderDb.get(0);
         } catch (Exception e) {
             e.printStackTrace();
             return null;

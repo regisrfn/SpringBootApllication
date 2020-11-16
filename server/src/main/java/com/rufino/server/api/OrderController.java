@@ -39,7 +39,7 @@ public class OrderController {
         return orderService.getAll();
     }
 
-    @GetMapping
+    @GetMapping("{id}")
     public Order getOrder(@PathVariable String id) {
         try {
             UUID idOrder = UUID.fromString(id);
