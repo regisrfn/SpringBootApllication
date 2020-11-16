@@ -1,5 +1,6 @@
 package com.rufino.server.services;
 
+import java.util.List;
 import java.util.UUID;
 
 import com.rufino.server.dao.OrderDAO;
@@ -25,6 +26,10 @@ public class OrderService {
 
     public int delete(UUID id){
         return orderDAO.deleteOrder(id);
+    }
+
+    public List<Order> getAll(){
+        return orderDAO.getAllOrder();
     }
     
 }

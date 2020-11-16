@@ -1,6 +1,8 @@
 package com.rufino.server;
 
 import static org.junit.jupiter.api.Assertions.*;
+
+import java.util.List;
 import java.util.UUID;
 import com.rufino.server.model.Order;
 import com.rufino.server.services.OrderService;
@@ -124,7 +126,19 @@ class ServerApplicationTests {
 
 
 	// -----------------TEST SELECT ALL
-	
+	@Test
+	public void selctAllOrderDAO() {
+		Order order = new Order();
+		createAndAssert(order);
+		List<Order> Db = orderService.getAll();
+		assertEquals(order.getIdOrder(),Db.get(0).getIdOrder());
+		assertEquals(order.getIdClient(),Db.get(0).getIdClient());
+		assertEquals(order.getIdParcel(),Db.get(0).getIdParcel());
+		assertEquals(order.getTotalValue(),Db.get(0).getTotalValue());
+		assertEquals(order.getOrderAddress(),Db.get(0).getOrderAddress());
+	}
+
+	// -----------------------------------------------------
 	private void createAndAssert(Order order) {
 		order.setIdClient("abc123");
 		order.setIdParcel("abc456");
