@@ -140,7 +140,7 @@ class ServerApplicationTests {
 	}
 
 	@Test
-	void selectAllOrdeHttp() throws Exception {
+	void selectAllOrderHttp() throws Exception {
 		Order order = new Order();
 		createAndAssert(order);
 		MvcResult result = mockMvc.perform(get("/api/v1/order").contentType(MediaType.APPLICATION_JSON))
@@ -148,7 +148,28 @@ class ServerApplicationTests {
 
 		ObjectMapper om = new ObjectMapper();
 		String jsonString = om.writeValueAsString(order);
-		assertEquals("["+jsonString+"]", result.getResponse().getContentAsString());
+		assertEquals("[" + jsonString + "]", result.getResponse().getContentAsString());
+
+	}
+
+	// -----------------TEST UPDATE ORDER
+	@Test
+	public void updateOrderDAO() {
+		Order order = new Order();
+		createAndAssert(order);
+
+		Order updateOrder = new Order();
+		updateOrder.setIdClient("abc123 updated");
+		updateOrder.setTotalValue(20.5f);
+		int result = orderService.update(order.getIdOrder(), updateOrder);
+		assertEquals(1, result);
+
+		List<Order> Db = orderService.getAll();
+		assertEquals(order.getIdOrder(), Db.get(0).getIdOrder());
+		assertEquals("abc123 updated", Db.get(0).getIdClient());
+		assertEquals(order.getIdParcel(), Db.get(0).getIdParcel());
+		assertEquals(20.5f, Db.get(0).getTotalValue());
+		assertEquals(order.getOrderAddress(), Db.get(0).getOrderAddress());
 
 	}
 
