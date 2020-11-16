@@ -32,6 +32,10 @@ public class OrderService {
         return orderDAO.getAllOrder();
     }
 
+    public Order getOrder(UUID id){
+        return orderDAO.getOrder(id);
+    }
+
     public int update(UUID id,Order order) {
         return orderDAO.updateOrder(id,order);
     }

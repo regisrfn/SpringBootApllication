@@ -68,6 +68,18 @@ public class OrderRepository implements OrderDAO {
     }
 
     @Override
+    public Order getOrder(UUID id) {
+        try {
+            String sql = "SELECT * FROM ORDERS WHERE id_order = ?";
+            return jdbcTemplate.queryForObject(sql, new Object[] { id },
+                    new BeanPropertyRowMapper<Order>(Order.class));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
     public int updateOrder(UUID id, Order order) {
         try {
             String sql = "UPDATE Orders SET ";
@@ -85,8 +97,8 @@ public class OrderRepository implements OrderDAO {
                 } else {
                     sql = sql + key.replaceAll("([A-Z])", "_$1").toLowerCase() + "=" + jsonObject.get(key) + " ";
                 }
-                if(keys.hasNext()){
-                    sql = sql+", ";
+                if (keys.hasNext()) {
+                    sql = sql + ", ";
                 }
             }
             return jdbcTemplate.update(sql + "where id_order = ?", id);

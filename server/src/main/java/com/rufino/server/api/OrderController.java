@@ -39,6 +39,17 @@ public class OrderController {
         return orderService.getAll();
     }
 
+    @GetMapping
+    public Order getOrder(@PathVariable String id) {
+        try {
+            UUID idOrder = UUID.fromString(id);
+            return orderService.getOrder(idOrder);   
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     @PostMapping
     public String saveOrder(@RequestBody Order order) {
         int op = orderService.addOrder(order);

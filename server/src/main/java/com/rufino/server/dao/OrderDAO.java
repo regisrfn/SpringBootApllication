@@ -9,6 +9,7 @@ public interface OrderDAO {
     int insertOrder(UUID idOrder, Order order);
     int deleteOrder(UUID id);
     List<Order> getAllOrder();
+    Order getOrder(UUID id);
     int updateOrder(UUID id, Order order);
 
     default int insertOrder(Order order){
