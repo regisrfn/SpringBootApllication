@@ -53,11 +53,11 @@ public class OrderRepository implements OrderDAO {
     public List<Order> getAllOrder() {
         try {
             String sql = "SELECT * FROM ORDERS";
-            List<Order> orders = jdbcTemplate.query(sql, new BeanPropertyRowMapper(Order.class));
-            return orders;
+            orderDb = jdbcTemplate.query(sql, new BeanPropertyRowMapper<Order>(Order.class));
+            return orderDb;
         } catch (Exception e) {
             e.printStackTrace();
-            return null;
+            return orderDb;
         }
     }
 }

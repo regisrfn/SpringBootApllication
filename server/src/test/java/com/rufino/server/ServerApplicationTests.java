@@ -4,6 +4,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
 import java.util.UUID;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rufino.server.model.Order;
 import com.rufino.server.services.OrderService;
 import org.json.JSONObject;
@@ -55,6 +57,7 @@ class ServerApplicationTests {
 		Order order = new Order();
 		createAndAssert(order);
 	}
+
 	@Test
 	void addOrderTestHttp() throws Exception {
 
@@ -85,7 +88,6 @@ class ServerApplicationTests {
 
 	}
 
-	
 	// -----------------TEST DELETING ORDER
 	@Test
 	public void deleteOrderDAO() {
@@ -124,18 +126,30 @@ class ServerApplicationTests {
 		assertEquals(1, countAfterDelete);
 	}
 
-
 	// -----------------TEST SELECT ALL
 	@Test
-	public void selctAllOrderDAO() {
+	public void selectAllOrderDAO() {
 		Order order = new Order();
 		createAndAssert(order);
 		List<Order> Db = orderService.getAll();
-		assertEquals(order.getIdOrder(),Db.get(0).getIdOrder());
-		assertEquals(order.getIdClient(),Db.get(0).getIdClient());
-		assertEquals(order.getIdParcel(),Db.get(0).getIdParcel());
-		assertEquals(order.getTotalValue(),Db.get(0).getTotalValue());
-		assertEquals(order.getOrderAddress(),Db.get(0).getOrderAddress());
+		assertEquals(order.getIdOrder(), Db.get(0).getIdOrder());
+		assertEquals(order.getIdClient(), Db.get(0).getIdClient());
+		assertEquals(order.getIdParcel(), Db.get(0).getIdParcel());
+		assertEquals(order.getTotalValue(), Db.get(0).getTotalValue());
+		assertEquals(order.getOrderAddress(), Db.get(0).getOrderAddress());
+	}
+
+	@Test
+	void selectAllOrdeHttp() throws Exception {
+		Order order = new Order();
+		createAndAssert(order);
+		MvcResult result = mockMvc.perform(get("/api/v1/order").contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk()).andReturn();
+
+		ObjectMapper om = new ObjectMapper();
+		String jsonString = om.writeValueAsString(order);
+		assertEquals("["+jsonString+"]", result.getResponse().getContentAsString());
+
 	}
 
 	// -----------------------------------------------------
