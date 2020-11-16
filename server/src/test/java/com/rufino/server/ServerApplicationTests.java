@@ -213,6 +213,33 @@ class ServerApplicationTests {
 
 	}
 
+	@Test
+	public void getOrderHttp() throws Exception {
+		Order order = new Order();
+		createAndAssert(order);
+
+		MvcResult result = mockMvc.perform(
+				get(String.format("/api/v1/order/%s", order.getIdOrder())).contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk()).andReturn();
+
+		ObjectMapper om = new ObjectMapper();
+		String jsonString = om.writeValueAsString(order);
+		assertEquals(jsonString,result.getResponse().getContentAsString());
+
+	}
+
+	@Test
+	public void getOrderHttp_NotFoundOrder() throws Exception {
+		UUID id = UUID.fromString("0332d486-2855-11eb-adc1-0242ac120002");
+
+		MvcResult result = mockMvc.perform(
+				get(String.format("/api/v1/order/%s",id)).contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk()).andReturn();
+
+		assertEquals("",result.getResponse().getContentAsString());
+
+	}
+
 	// -----------------------------------------------------
 	private void createAndAssert(Order order) {
 		order.setIdClient("abc123");
