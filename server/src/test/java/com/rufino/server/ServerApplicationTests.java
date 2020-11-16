@@ -8,6 +8,7 @@ import java.util.UUID;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rufino.server.model.Order;
 import com.rufino.server.services.OrderService;
+
 import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -163,6 +164,30 @@ class ServerApplicationTests {
 		updateOrder.setTotalValue(20.5f);
 		int result = orderService.update(order.getIdOrder(), updateOrder);
 		assertEquals(1, result);
+
+		List<Order> Db = orderService.getAll();
+		assertEquals(order.getIdOrder(), Db.get(0).getIdOrder());
+		assertEquals("abc123 updated", Db.get(0).getIdClient());
+		assertEquals(order.getIdParcel(), Db.get(0).getIdParcel());
+		assertEquals(20.5f, Db.get(0).getTotalValue());
+		assertEquals(order.getOrderAddress(), Db.get(0).getOrderAddress());
+
+	}
+
+	@Test
+	public void updateOrderHttp() throws Exception {
+		Order order = new Order();
+		createAndAssert(order);
+
+		JSONObject my_obj = new JSONObject();
+		my_obj.put("idClient", "abc123 updated");
+		my_obj.put("totalValue", 20.5f);
+
+		MvcResult result = mockMvc
+				.perform(put(String.format("/api/v1/order/%s", order.getIdOrder()))
+						.contentType(MediaType.APPLICATION_JSON).content(my_obj.toString()))
+				.andExpect(status().isOk()).andReturn();
+		assertEquals("successfully operation", result.getResponse().getContentAsString());
 
 		List<Order> Db = orderService.getAll();
 		assertEquals(order.getIdOrder(), Db.get(0).getIdOrder());
