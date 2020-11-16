@@ -198,6 +198,21 @@ class ServerApplicationTests {
 
 	}
 
+	// -----------------TEST GET ORDER BY ID
+	@Test
+	public void getOrderDAO() {
+		Order order = new Order();
+		createAndAssert(order);
+		Order orderDb = orderService.getOrder(order.getIdOrder());
+
+		assertEquals(order.getIdOrder(), orderDb.getIdOrder());
+		assertEquals(order.getIdClient(), orderDb.getIdClient());
+		assertEquals(order.getIdParcel(), orderDb.getIdParcel());
+		assertEquals(order.getTotalValue(), orderDb.getTotalValue());
+		assertEquals(order.getOrderAddress(), orderDb.getOrderAddress());
+
+	}
+
 	// -----------------------------------------------------
 	private void createAndAssert(Order order) {
 		order.setIdClient("abc123");
