@@ -1,29 +1,25 @@
 package com.rufino.server.services;
 
-import org.springframework.amqp.core.Queue;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import java.util.concurrent.atomic.AtomicInteger;
-
 @Service
 public class RabbitMqService {
-
     @Autowired
-    private RabbitTemplate template;
+    private AmqpTemplate rabbitTemplate;
 
-    @Autowired
-    private Queue queue;
-    AtomicInteger count = new AtomicInteger(0);
+    @Value("${sample.rabbitmq.exchange}")
+    private String exchange;
 
-    @Scheduled(fixedDelay = 1000, initialDelay = 500)
-    public void send(String orderDelivery) {
-        StringBuilder builder = new StringBuilder(orderDelivery);
-        String message = builder.toString();
-        template.convertAndSend(queue.getName(), message);
-        System.out.println(" [x] Sent '" + message + "'");
+    @Value("${sample.rabbitmq.routingkey}")
+    private String routingkey;
+
+    @Scheduled
+    public void send(String message) {
+        rabbitTemplate.convertAndSend(exchange, routingkey, message);
+        System.out.println("Send msg to consumer= " + message + " ");
     }
-
 }

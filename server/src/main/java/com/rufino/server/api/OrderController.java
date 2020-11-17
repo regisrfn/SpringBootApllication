@@ -43,7 +43,7 @@ public class OrderController {
     public Order getOrder(@PathVariable String id) {
         try {
             UUID idOrder = UUID.fromString(id);
-            return orderService.getOrder(idOrder);   
+            return orderService.getOrder(idOrder);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
