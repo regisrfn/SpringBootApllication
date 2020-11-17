@@ -15,3 +15,9 @@ CREATE TABLE IF NOT EXISTS orders (
 -- 	total_value FLOAT NOT NULL,
 -- 	order_address VARCHAR(256) NOT NULL
 -- );
+
+CREATE TABLE IF NOT EXISTS Delivery (
+	id_delivery VARCHAR NOT NULL PRIMARY KEY,
+	id_client VARCHAR NOT NULL,
+	order_address VARCHAR NOT NULL
+);
